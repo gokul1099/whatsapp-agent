@@ -1,0 +1,59 @@
+import os
+from uuid import uuid4
+
+from langchain_core.messages import AIMessage, HumanMessage, RemoveMessage
+from langchain_core.runnables import RunnableConfig
+
+from ai_companion.graph.states import AICompanionState
+from ai_companion.graph.utils.chains import (
+    get_chat_model,
+    get_router_chain
+)
+
+from ai_companion.modules.memory.long_term.memory_manager import get_memory_manager
+from ai_companion.settings import settings
+
+
+
+async def router_node(state: AICompanionState) -> AICompanionState:
+    """Baed on the input this node will analyse and route to the next node. It may be video, audio or text node
+       Returns:
+        anyone of the type: 'conversation', 'image', 'audio'
+    """
+    router_chain = get_router_chain()
+    response = await router_chain.ainvoke({"message": state["messages"][-settings.ROUTER_MESSAGES_TO_ANALYZE :]})
+    return {"workflow": response.response_type}
+
+async def  memory_extraction_node(state: AICompanionState):
+    """Extract and store important information from the last messages"""
+    if not state["messages"]:
+        return {}
+    memory_manager = get_memory_manager()
+    memory_manager.extract_and_store_memories(state["messages"][-1])
+    return {}
+
+def context_injection_node(state: AICompanionState):
+    """Inject ava's current activity into the current context inorder to improve the realism and simulated life"""
+    
+    pass
+
+async def memory_injection_node(state: AICompanionState):
+    """Fetches top k memories similar to current conversation and inject it into current context so the response will be based on previous conversation also"""
+    pass
+
+async def audio_node(state: AICompanionState):
+    """Handles all audio related input and generate response"""
+    pass
+
+async def conversation_node(state: AICompanionState, config: RunnableConfig):
+    """Handles all general text conversation and generate reponse based on that"""
+    pass
+
+async def image_node(state: AICompanionState, config:RunnableConfig):
+    """Handles all image related input and generate response based on that"""
+    pass
+
+async def summarize_conversation_node(state: AICompanionState):
+    """Summarize a list of conversation once a threashold is reached. This helps us to compress a lot of data into a summarized context to reduce token limit"""
+    pass
+

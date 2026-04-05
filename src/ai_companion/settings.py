@@ -6,19 +6,19 @@ class Settings(BaseSettings):
 	
 	OPENAI_API_KEY:str
 	GROQ_API_KEY: str
-	ELEVENLABS_API_KEY: str
-	ELEVANLABA_VOICE_ID: str
-	TOGETHER_API_KEY: str
+	# ELEVENLABS_API_KEY: str
+	# ELEVANLABA_VOICE_ID: str
+	# TOGETHER_API_KEY: str
 
 
 
-	QDRANT_API_KEY: str | None
-	QDRANT_URL: str
+	QDRANT_API_KEY: str | None = None
+	QDRANT_URL: str | None = None
 	QDRANT_PORT : str = "6333"
 	QDRANY_HOST: str | None = None
 
 	MEMORY_EMBEDDING_MODEL: str = "text-embedding-3-small"
-	EMBEDDING_DIMENSION = 1536  # text-embedding-3-small dimension
+	EMBEDDING_DIMENSION: int = 1536  # text-embedding-3-small dimension
 	TEXT_MODEL_NAME: str = "llama-3.3-70b-versatile"
 	SMALL_TEXT_MODEL: str = "gemma2-9b-it"
 	STT_MODEL_NAME:str  = "whisper-large-v3-turbo"
