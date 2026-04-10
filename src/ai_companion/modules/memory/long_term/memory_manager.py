@@ -63,6 +63,21 @@ class MemoryManager:
                     "timestamp": datetime.now().isoformat()
                 }
                 )
+    async def get_relevant_memories(self, context: str) -> List[str]:
+        """Extract relevant memories to last conversation and return in for memory injection"""
+        if not context:
+            return []
+        memories = self.vector_store.search_memories(query=context, k=settings.MEMORY_TOP_K)
+        if memories:
+            for memory in memories:
+                self.logger.debug(f"Memory: `{memory.text}`")
+        return [memory.text for memory in memories]
+
+    def format_memories_for_prompt(self, memories: List[str]) -> str:
+        if not memories:
+            return ""
+        return "\n".join(f"- {memory}" for memory in memories)
+        
 
 def get_memory_manager() -> MemoryManager:
     return MemoryManager()

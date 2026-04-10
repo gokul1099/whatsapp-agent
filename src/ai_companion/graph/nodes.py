@@ -39,7 +39,12 @@ def context_injection_node(state: AICompanionState):
 
 async def memory_injection_node(state: AICompanionState):
     """Fetches top k memories similar to current conversation and inject it into current context so the response will be based on previous conversation also"""
-    pass
+    memory_manager = get_memory_manager()
+    recent_context = " ".join([m.content for m in state["messages"][-3:]])
+    memories = await memory_manager.get_relevant_memories(recent_context)
+    print(memories,"memories")
+    memory_context = memory_manager.format_memories_for_prompt(memories=memories)
+    return {"memory_context" : memory_context}
 
 async def audio_node(state: AICompanionState):
     """Handles all audio related input and generate response"""

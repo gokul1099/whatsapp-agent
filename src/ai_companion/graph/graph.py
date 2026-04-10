@@ -23,7 +23,7 @@ def create_workflow_graph():
     ##Adding all the nodes
     graph_builder.add_node(NodeName.MEMORY_EXTRACTION,memory_extraction_node)
     graph_builder.add_node(NodeName.ROUTER, router_node)
-    graph_builder.add_node(NodeName.CONTEXT_INJECTION, context_injection_node)
+    # graph_builder.add_node(NodeName.CONTEXT_INJECTION, context_injection_node)
     graph_builder.add_node(NodeName.MEMORY_INJECTION, memory_injection_node)
     graph_builder.add_node(NodeName.AUDIO, audio_node)
     graph_builder.add_node(NodeName.CONVERSATION, conversation_node)
@@ -38,8 +38,8 @@ def create_workflow_graph():
     graph_builder.add_edge(NodeName.MEMORY_EXTRACTION, NodeName.ROUTER)
 
     #then inject context and memories
-    graph_builder.add_edge(NodeName.ROUTER, NodeName.CONTEXT_INJECTION)
-    graph_builder.add_edge(NodeName.CONTEXT_INJECTION, NodeName.MEMORY_INJECTION)
+    graph_builder.add_edge(NodeName.ROUTER, NodeName.MEMORY_INJECTION)
+    # graph_builder.add_edge(NodeName.CONTEXT_INJECTION, NodeName.MEMORY_INJECTION)
 
     ## based on the routed node response selecte next work flow. it may be "conversation","image",audio
     graph_builder.add_conditional_edges(NodeName.MEMORY_INJECTION, select_workflow)
