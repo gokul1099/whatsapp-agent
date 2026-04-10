@@ -37,14 +37,14 @@ class VectorStore:
     _instance: Optional["VectorStore"] = None
     _initialized: bool = False
 
-    def __new_(cls) -> None:
+    def __new__(cls) -> None:
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
 
     def __init__(self) -> None:
         if not self._initialized:
-            self.model = OpenAI(model=settings.MEMORY_EMBEDDING_MODEL)
+            self.model = OpenAI()
             self.client = QdrantClient(url=settings.QDRANT_URL, api_key=settings.QDRANT_API_KEY, port=settings.QDRANT_PORT)
             self._initialized = True
     
@@ -87,11 +87,11 @@ class VectorStore:
         if not self._is_collection_exists():
             self._create_collection()
         
-        similar_memory= self.find_simialar_memory()
+        similar_memory= self.find_simialar_memory(text)
         if similar_memory and similar_memory.id:
             metadata["id"] = similar_memory.id
         
-        embedding = self.model.embeddings.create(input=text).data[0].embedding
+        embedding = self.model.embeddings.create(model=settings.MEMORY_EMBEDDING_MODEL,input=text).data[0].embedding
         point = PointStruct(
             id=metadata.get("id", hash(text)),
             vector= embedding.tolist(),
@@ -119,7 +119,7 @@ class VectorStore:
         if not self._is_collection_exists():
             return []
 
-        query_embedding = self.model.embeddings.create(input=query).data[0].embedding
+        query_embedding = self.model.embeddings.create(model=settings.MEMORY_EMBEDDING_MODEL,input=query).data[0].embedding
         return self.client.search(
             collection_name= self.COLLECTION_NAME,
             query_vector= query_embedding.tolist(),

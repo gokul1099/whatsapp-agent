@@ -16,7 +16,7 @@ class MemoryAnalysis(BaseModel):
     is_important: bool= Field(
         ...,
         description="Wehther the message is important enough to be stored as memory"
-    ),
+    )
     formatted_memory: Optional[str] = Field(
         ...,
         description="The formatted memory to be stored"
@@ -36,9 +36,9 @@ class MemoryManager:
             max_retries=2
         ).with_structured_output(MemoryAnalysis)
     
-    async def _analyse_memory(self, memory):
+    async def _analyse_memory(self, message: str):
         """Analyses a memory to determine importane anf format if needed"""
-        prompt = MEMORY_EXTRACTION_PROMPT.format(memory)
+        prompt = MEMORY_EXTRACTION_PROMPT.format(message=message)
         return await self.llm.ainvoke(prompt)
 
     async def extract_and_store_memories(self, message: BaseMessage) -> None:
@@ -46,7 +46,7 @@ class MemoryManager:
         if message.type != "human":
             return
         
-        message_analysis: MemoryAnalysis = await self._analyse_memory(memory=message.content)
+        message_analysis: MemoryAnalysis = await self._analyse_memory(message=message.content)
         if message_analysis.is_important:
             ##Check similart memory already exists
             similar_memories = self.vector_store.find_simialar_memory(message_analysis.formatted_memory)

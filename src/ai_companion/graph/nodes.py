@@ -21,7 +21,7 @@ async def router_node(state: AICompanionState) -> AICompanionState:
         anyone of the type: 'conversation', 'image', 'audio'
     """
     router_chain = get_router_chain()
-    response = await router_chain.ainvoke({"message": state["messages"][-settings.ROUTER_MESSAGES_TO_ANALYZE :]})
+    response = await router_chain.ainvoke({"messages": state["messages"][-settings.ROUTER_MESSAGES_TO_ANALYZE :]})
     return {"workflow": response.response_type}
 
 async def  memory_extraction_node(state: AICompanionState):
@@ -29,7 +29,7 @@ async def  memory_extraction_node(state: AICompanionState):
     if not state["messages"]:
         return {}
     memory_manager = get_memory_manager()
-    memory_manager.extract_and_store_memories(state["messages"][-1])
+    await memory_manager.extract_and_store_memories(state["messages"][-1])
     return {}
 
 def context_injection_node(state: AICompanionState):

@@ -13,14 +13,14 @@ class Settings(BaseSettings):
 
 
 	QDRANT_API_KEY: str | None = None
-	QDRANT_URL: str | None = None
+	QDRANT_URL: str | None =  "http://localhost:6333"
 	QDRANT_PORT : str = "6333"
-	QDRANY_HOST: str | None = None
+	QDRANY_HOST: str | None = "localhost"
 
 	MEMORY_EMBEDDING_MODEL: str = "text-embedding-3-small"
 	EMBEDDING_DIMENSION: int = 1536  # text-embedding-3-small dimension
 	TEXT_MODEL_NAME: str = "llama-3.3-70b-versatile"
-	SMALL_TEXT_MODEL: str = "gemma2-9b-it"
+	SMALL_TEXT_MODEL: str = "llama-3.1-8b-instant"
 	STT_MODEL_NAME:str  = "whisper-large-v3-turbo"
 	TTS_MODEL_NAME: str = "eleven_flash_v2_5"
 	TTI_MODEL_NAME: str = "black-forest-labs/FLUX.1-schnell-Free"
@@ -32,7 +32,7 @@ class Settings(BaseSettings):
 	TOTAL_MESSAGE_SUMMARY_TRIGGER: int =20
 	TOTAL_MESSAGE_AFTER_SUMMARY: int = 5
 
-	SHORT_TERM_MEMORY_DB_PATH: str = "/app/data/memory.db"
+	SHORT_TERM_MEMORY_DB_PATH: str = "/data/memory.db"
 
 
 
