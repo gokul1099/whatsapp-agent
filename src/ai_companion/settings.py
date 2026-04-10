@@ -32,7 +32,7 @@ class Settings(BaseSettings):
 	TOTAL_MESSAGE_SUMMARY_TRIGGER: int =20
 	TOTAL_MESSAGE_AFTER_SUMMARY: int = 5
 
-	SHORT_TERM_MEMORY_DB_PATH: str = "/data/memory.db"
+	SHORT_TERM_MEMORY_DB_PATH: str = "./data/memory.db"
 
 
 

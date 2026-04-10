@@ -94,7 +94,7 @@ class VectorStore:
         embedding = self.model.embeddings.create(model=settings.MEMORY_EMBEDDING_MODEL,input=text).data[0].embedding
         point = PointStruct(
             id=metadata.get("id", hash(text)),
-            vector= embedding.tolist(),
+            vector=embedding,
             payload = {
                 "text" : text,
                 **metadata
@@ -120,11 +120,20 @@ class VectorStore:
             return []
 
         query_embedding = self.model.embeddings.create(model=settings.MEMORY_EMBEDDING_MODEL,input=query).data[0].embedding
-        return self.client.search(
+        response =  self.client.query_points(
             collection_name= self.COLLECTION_NAME,
-            query_vector= query_embedding.tolist(),
+            query= query_embedding,
             limit=k
         )
+        
+        return [
+            Memory(
+                text=point.payload["text"],
+                metadata=point.payload,
+                score=point.score,
+            )
+            for point in response.points
+        ]
         
 
 @lru_cache
