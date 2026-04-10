@@ -7,7 +7,8 @@ from langchain_core.runnables import RunnableConfig
 from ai_companion.graph.states import AICompanionState
 from ai_companion.graph.utils.chains import (
     get_chat_model,
-    get_router_chain
+    get_router_chain,
+    get_character_card_chain
 )
 
 from ai_companion.modules.memory.long_term.memory_manager import get_memory_manager
@@ -52,7 +53,17 @@ async def audio_node(state: AICompanionState):
 
 async def conversation_node(state: AICompanionState, config: RunnableConfig):
     """Handles all general text conversation and generate reponse based on that"""
-    pass
+    memory_context = state.get("memory_context")
+    chain = get_character_card_chain(state.get("summary" , ""))
+    response = await chain.ainvoke(
+        {
+            "messages": state["messages"],
+            "memory_context": memory_context
+        },
+        config
+    )
+    return {"messages": AIMessage(content=response)}
+
 
 async def image_node(state: AICompanionState, config:RunnableConfig):
     """Handles all image related input and generate response based on that"""

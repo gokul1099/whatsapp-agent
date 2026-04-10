@@ -54,11 +54,6 @@ Here's what you know about the user from previous conversations:
 
 {memory_context}
 
-## Ava's Current Activity
-
-As Ava, you're involved in the following activity:
-
-{current_activity}
 
 In addition to the roleplay context, you have to follow, ALWAYS, the following rules:
 

@@ -21,8 +21,8 @@ class AICompanionState(MessagesState):
     workflow: Optional[WorkflowType]
     audio_buffer: Optional[bytes]
     image_path: Optional[str]
-    current_activity: Optional[str]
-    apply_activity: Optional[bool]
+    # current_activity: Optional[str]
+    # apply_activity: Optional[bool]
     memory_context: Optional[str]
 
 

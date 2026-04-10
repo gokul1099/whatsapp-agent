@@ -19,3 +19,18 @@ def get_router_chain():
     )
     return prompt | model
 
+def get_character_card_chain(summary: str = ""):
+    model = get_chat_model()
+    system_message = CHARACTER_CARD_PROMPT
+
+    if summary:
+        system_message += f"\n\n Summary of conversation earlier betwrrn Ava and the user: {summary}"
+    
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", system_message),
+            MessagesPlaceholder(variable_name="messages")
+        ]
+    )
+
+    return prompt | model | AsteriskRemovalParser()
