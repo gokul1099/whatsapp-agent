@@ -4,6 +4,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_groq import ChatGroq
 
 from ai_companion.settings import settings
+from ai_companion.modules.speech import TextToSpeech
 
 
 def get_chat_model(temperature: float= 0.7):
@@ -16,8 +17,8 @@ def get_chat_model(temperature: float= 0.7):
 
 def get_text_to_speech_model():
     """Return text to speech model"""
-    pass
-
+    return TextToSpeech()
+    
 def get_image_to_text_model():
     """Return image to text model"""
     pass

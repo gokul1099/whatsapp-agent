@@ -10,7 +10,7 @@ from ai_companion.graph.utils.chains import (
     get_router_chain,
     get_character_card_chain
 )
-
+from ai_companion.graph.utils.helpers import get_text_to_speech_model
 from ai_companion.modules.memory.long_term.memory_manager import get_memory_manager
 from ai_companion.settings import settings
 
@@ -47,9 +47,22 @@ async def memory_injection_node(state: AICompanionState):
     memory_context = memory_manager.format_memories_for_prompt(memories=memories)
     return {"memory_context" : memory_context}
 
-async def audio_node(state: AICompanionState):
+async def audio_node(state: AICompanionState, config: RunnableConfig):
     """Handles all audio related input and generate response"""
-    pass
+    memory_context = state["memory_context"]
+    chain = get_character_card_chain(state.get("summary", ""))
+    text_to_speech_module = get_text_to_speech_model()
+    response = await chain.ainvoke(
+        {
+            "messages" : state["messages"],
+            "memory_context": memory_context
+        },
+        config,
+    )
+    output_audio = await text_to_speech_module.synthesize(response)
+
+    return {"messages": response, "audio_buffer": output_audio}
+
 
 async def conversation_node(state: AICompanionState, config: RunnableConfig):
     """Handles all general text conversation and generate reponse based on that"""

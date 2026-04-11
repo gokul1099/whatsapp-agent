@@ -6,8 +6,8 @@ class Settings(BaseSettings):
 	
 	OPENAI_API_KEY:str
 	GROQ_API_KEY: str
-	# ELEVENLABS_API_KEY: str
-	# ELEVANLABA_VOICE_ID: str
+	ELEVENLABS_API_KEY: str
+	ELEVANLABA_VOICE_ID: str
 	# TOGETHER_API_KEY: str
 
 
