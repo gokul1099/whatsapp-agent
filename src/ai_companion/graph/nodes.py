@@ -10,7 +10,7 @@ from ai_companion.graph.utils.chains import (
     get_router_chain,
     get_character_card_chain
 )
-from ai_companion.graph.utils.helpers import get_text_to_speech_model
+from ai_companion.graph.utils.helpers import get_text_to_speech_model, get_text_to_image_model
 from ai_companion.modules.memory.long_term.memory_manager import get_memory_manager
 from ai_companion.settings import settings
 
@@ -80,9 +80,40 @@ async def conversation_node(state: AICompanionState, config: RunnableConfig):
 
 async def image_node(state: AICompanionState, config:RunnableConfig):
     """Handles all image related input and generate response based on that"""
-    pass
+    memory_context = state.get("memory_context")
+    chain = get_character_card_chain(state.get("summary", ""))
+    text_to_image_module = get_text_to_image_model()
+    scenario = await text_to_image_module.create_scenario(state["messages"][-5:])
+    os.makedirs("generated_images", exist_ok=True)
+    img_path = f"generated_image/image_{str(uuid4())}.png"
+    await text_to_image_module.generate_image(scenario.image_prompt, img_path)
+    
+    #inject the image prompt information as an AI message
+    scenario_message= HumanMessage(content=f"<image attached by AVA generated from prompt: {scenario.image_prompt}")
+    updated_message = state["messages"] + [scenario_message]
+    response = await chain.ainvoke(
+        {
+            "messages": updated_message,
+            "memory_context": memory_context
+        },
+        config
+    )
+    return {"messages": AIMessage(content=response), "image_path":img_path}
 
 async def summarize_conversation_node(state: AICompanionState):
     """Summarize a list of conversation once a threashold is reached. This helps us to compress a lot of data into a summarized context to reduce token limit"""
-    pass
+    model =get_chat_model()
+    summary = state.get("summary")
+    if summary:
+        summary_prompt = (f"This is the summary of previous conversation between AVA and user: {summary}" + 
+                            "Extend the summary by taking into account the new messages above")
+    else:
+        summary_prompt = (
+            "Create a summary of the conversation above between ava and user",
+            "The summary must be short description of the conversation that happened so far",
+            "but that captures all the relevant information shared between Ava and the user:"
+        )
+    messages = state["messages"] + summary_prompt
+    response = await model.ainvoke(messages)
+    return {"summary": response.content}
 

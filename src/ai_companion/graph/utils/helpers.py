@@ -5,6 +5,7 @@ from langchain_groq import ChatGroq
 
 from ai_companion.settings import settings
 from ai_companion.modules.speech import TextToSpeech
+from ai_companion.modules.image import ImageToText, TextToImage
 
 
 def get_chat_model(temperature: float= 0.7):
@@ -21,7 +22,10 @@ def get_text_to_speech_model():
     
 def get_image_to_text_model():
     """Return image to text model"""
-    pass
+    return ImageToText()
+
+def get_text_to_image_model():
+    return TextToImage()
 
 def remove_asterisk_content(text: str) -> str:
     """Remove content between asterisks form the text"""
