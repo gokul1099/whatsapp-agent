@@ -11,7 +11,8 @@ class Settings(BaseSettings):
 	# TOGETHER_API_KEY: str
 
 
-
+	TELEGRAM_BOT_TOKEN: str
+	GEMINI_API_KEY: str
 	QDRANT_API_KEY: str | None = None
 	QDRANT_URL: str | None =  "http://localhost:6333"
 	QDRANT_PORT : str = "6333"

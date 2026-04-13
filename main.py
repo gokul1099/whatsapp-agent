@@ -1,6 +1,13 @@
-def main():
-    print("Hello from ava-whatsapp-agent!")
+import uvicorn
 
+def main():
+    print("Starting Telegram Webhook Server on port 8000")
+    uvicorn.run(
+        "src.ai_companion.interfaces.telegram.server:app",
+        host="0.0.0.0",
+        port=8000,
+        reload=True
+    )
 
 if __name__ == "__main__":
     main()
