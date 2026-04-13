@@ -105,15 +105,15 @@ async def summarize_conversation_node(state: AICompanionState):
     model =get_chat_model()
     summary = state.get("summary")
     if summary:
-        summary_prompt = (f"This is the summary of previous conversation between AVA and user: {summary}" + 
+        summary_prompt = (f"This is the summary of previous conversation between AVA and user: {summary}"
                             "Extend the summary by taking into account the new messages above")
     else:
         summary_prompt = (
-            "Create a summary of the conversation above between ava and user",
-            "The summary must be short description of the conversation that happened so far",
+            "Create a summary of the conversation above between ava and user"
+            "The summary must be short description of the conversation that happened so far"
             "but that captures all the relevant information shared between Ava and the user:"
         )
-    messages = state["messages"] + summary_prompt
+    messages = state["messages"] + [HumanMessage(content=summary_prompt)]
     response = await model.ainvoke(messages)
     return {"summary": response.content}
 
